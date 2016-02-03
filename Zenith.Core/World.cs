@@ -39,7 +39,7 @@ namespace Zenith.Core
             _freeEntities.Push((uint)entity);
         }
 
-        protected uint CreateEntity()
+		public uint CreateEntity()
         {
             if (_freeEntities.Count == 0)
                 return MaxEntities;
@@ -54,7 +54,7 @@ namespace Zenith.Core
             return entity;
         }
 
-        protected void DestroyEntity(uint entity)
+        public void DestroyEntity(uint entity)
         {
             EntityMasks[entity].ClearAll();
             EntityMasks[entity].SetBit(ComponentType.NoComponents);
