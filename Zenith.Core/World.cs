@@ -10,22 +10,15 @@ namespace Zenith.Core
     /// </summary>
     public abstract class World
     {
-		private EntityManager _entityManager;
+        public uint MaxEntities { get; }
 
-		public World (uint maxEntities)
+		public EntityManager EntityManager { get; private set; }
+
+		protected World (uint maxEntities)
 		{
-			
-			_entityManager = new EntityManager(this, maxEntities);
+			EntityManager = new EntityManager(this);
+		    MaxEntities = maxEntities;
 		}
-
-		public void RegisterSubsystem(BitSet mask, Subsystem subsystem)
-		{
-			if (_subsystemComponentMasks.ContainsKey (mask))
-				_subsystemComponentMasks [mask].Add (subsystem);
-			else
-				_subsystemComponentMasks.Add (mask, new List<Subsystem>{ subsystem });
-		}
-
 
         /// <summary>
         /// Update all subsystems.

@@ -3,42 +3,61 @@ namespace Zenith.Core
 {
     public abstract class Subsystem
     {
-		private List<uint> _relevantEntities;
-
+		protected List<uint> RelevantEntities;
+        private List<uint> _entitiesToAdd;
+        private List<uint> _entitiesToRemove;
+          
+        public BitSet ComponentMask { get; private set; }
         /// <summary>
         /// The world that the subsystem operates in.
         /// </summary>
         protected World World { get; private set; }
-
-
-        protected Subsystem(World theWorld, BitSet componentMask)
+       
+        protected Subsystem(World theWorld)
         {
             World = theWorld;
-			World.RegisterSubsystem (componentMask, this);
-			_relevantEntities = new List<uint> ();
+            World.EntityManager.RegisterSubsystem(this);
+            ComponentMask = new BitSet();
+            RelevantEntities = new List<uint> ();
+            _entitiesToAdd = new List<uint>();
+            _entitiesToRemove = new List<uint>();
+
         }
 
         /// <summary>
         /// Update all entities in the world whose component masks include the component mask of this subsystem.
         /// </summary>
         /// <param name="dt"></param>
-        public abstract void Update(float dt);
+        public virtual void Update(float dt)
+        {
+            if (_entitiesToAdd.Count > 0)
+            {
+                RelevantEntities.AddRange(_entitiesToAdd);
+                _entitiesToAdd.Clear();
+            }
 
-		public void AddEntity(uint entity)
+            if (_entitiesToRemove.Count > 0)
+            {
+                RelevantEntities.RemoveAll(x => _entitiesToRemove.Contains(x));
+                _entitiesToRemove.Clear();
+            }
+        }
+
+		public virtual void AddEntity(uint entity)
 		{
-			if (!_relevantEntities.Contains (entity))
-				_relevantEntities.Add (entity);
+			if (!RelevantEntities.Contains (entity))
+                _entitiesToAdd.Add (entity);
 		}
 
-		public void RemoveEntity(uint entity)
+		public virtual void RemoveEntity(uint entity)
 		{
-			if (_relevantEntities.Contains (entity))
-				_relevantEntities.Remove (entity);
+			if (RelevantEntities.Contains (entity))
+                _entitiesToRemove.Add (entity);
 		}
 
 		public bool HasEntity(uint entity)
 		{
-			return _relevantEntities.IndexOf(entity) != -1;
+			return RelevantEntities.IndexOf(entity) != -1;
 		}
 
     }
