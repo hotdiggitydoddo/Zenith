@@ -1,20 +1,21 @@
-﻿namespace Zenith.Core
+﻿using System.Collections.Generic;
+namespace Zenith.Core
 {
     public abstract class Subsystem
     {
+		private List<uint> _relevantEntities;
+
         /// <summary>
         /// The world that the subsystem operates in.
         /// </summary>
         protected World World { get; private set; }
 
-        /// <summary>
-        /// Set of components on an entity that this system requires in order to perform its operations.
-        /// </summary>
-        protected BitSet ComponentMask { get; private set; }
-        protected Subsystem(World theWorld)
+
+        protected Subsystem(World theWorld, BitSet componentMask)
         {
             World = theWorld;
-            ComponentMask = new BitSet();
+			World.RegisterSubsystem (componentMask, this);
+			_relevantEntities = new List<uint> ();
         }
 
         /// <summary>
@@ -22,5 +23,23 @@
         /// </summary>
         /// <param name="dt"></param>
         public abstract void Update(float dt);
+
+		public void AddEntity(uint entity)
+		{
+			if (!_relevantEntities.Contains (entity))
+				_relevantEntities.Add (entity);
+		}
+
+		public void RemoveEntity(uint entity)
+		{
+			if (_relevantEntities.Contains (entity))
+				_relevantEntities.Remove (entity);
+		}
+
+		public bool HasEntity(uint entity)
+		{
+			return _relevantEntities.IndexOf(entity) != -1;
+		}
+
     }
 }

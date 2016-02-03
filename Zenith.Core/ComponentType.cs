@@ -10,4 +10,6 @@
     {
         public const int NoComponents = 0;
     }
+
+	public interface IComponent { }
 }

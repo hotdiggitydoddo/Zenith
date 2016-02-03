@@ -10,58 +10,23 @@ namespace Zenith.Core
     /// </summary>
     public abstract class World
     {
-        private readonly Stack<uint> _freeEntities;
-        private readonly List<uint> _entitiesInUse;
+		private EntityManager _entityManager;
 
-        public readonly uint MaxEntities;
-        public uint MaxEntityId => _entitiesInUse[_entitiesInUse.Count - 1];
-        public BitSet[] EntityMasks { get; }
+		public World (uint maxEntities)
+		{
+			
+			_entityManager = new EntityManager(this, maxEntities);
+		}
 
-        protected World(uint maxEntities)
-        {
-            MaxEntities = maxEntities;
-            EntityMasks = new BitSet[MaxEntities];
-            _entitiesInUse = new List<uint>((int)MaxEntities);
-            _freeEntities = new Stack<uint>();
-        }
+		public void RegisterSubsystem(BitSet mask, Subsystem subsystem)
+		{
+			if (_subsystemComponentMasks.ContainsKey (mask))
+				_subsystemComponentMasks [mask].Add (subsystem);
+			else
+				_subsystemComponentMasks.Add (mask, new List<Subsystem>{ subsystem });
+		}
 
-        /// <summary>
-        /// Creates a new bitset for entity, sets the bitset for no components, and pushes it onto the free entities stack.  
-        /// This method should be called in a loop over all entities and should include the initialization of a new component 
-        /// at the index of the entity in that component array.
-        /// </summary>
-        /// <param name="entity">Entity to initialize.</param>
-        protected virtual void Initialize(uint entity)
-        {
-            EntityMasks[entity] = new BitSet();
-            EntityMasks[entity].SetBit(ComponentType.NoComponents);
 
-            _freeEntities.Push((uint)entity);
-        }
-
-		public uint CreateEntity()
-        {
-            if (_freeEntities.Count == 0)
-                return MaxEntities;
-
-            var entity = _freeEntities.Pop();
-
-            EntityMasks[entity].ClearBit(ComponentType.NoComponents);
-
-            _entitiesInUse.Add(entity);
-            _entitiesInUse.Sort();
-
-            return entity;
-        }
-
-        public void DestroyEntity(uint entity)
-        {
-            EntityMasks[entity].ClearAll();
-            EntityMasks[entity].SetBit(ComponentType.NoComponents);
-            _freeEntities.Push(entity);
-            _entitiesInUse.Remove(entity);
-            _entitiesInUse.Sort();
-        }
         /// <summary>
         /// Update all subsystems.
         /// </summary>
