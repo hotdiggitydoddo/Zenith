@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{8DCC7D56-6FC8-4966-A2A2-E3F9213AB3D1}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -82,7 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Zenith.Core\Zenith.Core.csproj">
-      <Project>{de16f2e2-ed23-4cdc-b159-0485a8dcf280}</Project>
+      <Project>{DE16F2E2-ED23-4CDC-B159-0485A8DCF280}</Project>
       <Name>Zenith.Core</Name>
     </ProjectReference>
   </ItemGroup>
