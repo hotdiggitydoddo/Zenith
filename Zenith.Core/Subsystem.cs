@@ -57,7 +57,7 @@ namespace Zenith.Core
 
 		public bool HasEntity(uint entity)
 		{
-			return RelevantEntities.IndexOf(entity) != -1;
+			return RelevantEntities.IndexOf(entity) != -1 || _entitiesToAdd.IndexOf(entity) != -1 || _entitiesToRemove.IndexOf(entity) != -1;
 		}
 
     }

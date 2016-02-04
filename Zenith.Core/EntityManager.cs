@@ -59,7 +59,7 @@ namespace Zenith.Core
 
             // tell all systems that now match this entities bitmask to add the entity to their internal update lists
 			foreach (var subsystem in _subsystems)
-				if (subsystem.ComponentMask.IsSubsetOf (_entities [entity]))
+				if (!subsystem.HasEntity(entity) && subsystem.ComponentMask.IsSubsetOf (_entities [entity]))
 					subsystem.AddEntity (entity);
 		}
 
@@ -80,7 +80,7 @@ namespace Zenith.Core
 		        var subsystemsWithEntity = _subsystems.FindAll(x => x.HasEntity(entity));
 		        foreach (var subsystem in subsystemsWithEntity)
 		        {
-		            if (!subsystem.ComponentMask.IsSubsetOf(_entities[entity]))
+		            if (subsystem.HasEntity(entity) && !subsystem.ComponentMask.IsSubsetOf(_entities[entity]))
                         subsystem.RemoveEntity(entity);
 		        }
 		    }
